@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: examplePassword
+      # MARIADB_RANDOM_ROOT_PASSWORD: yes
+      # MARIADB_DATABASE: init_db
+      # MARIADB_USER: init_user
+      # MARIADB_PASSWORD: init_user_passwd
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    # ports:
+    #  - HOST_PORT:3306
+    networks:
+      - npm-net
+
+volumes:
+  mariadb-data:
+
+# Use nginx proxy manager
+networks:
+  npm-net:
+    external: true
