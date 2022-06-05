@@ -9,6 +9,8 @@ services:
       - 443:443
       # Disable 81 after proxy configured
       - 81:81
+      # Nginx Stream
+      - 30000-30100:30000-30100
     environment:
       DISABLE_IPV6: "true"
     extra_hosts:
