@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  memcached:
+    image: memcached:latest
+    container_name: memcached
+    restart: unless-stopped
+    command: -m 128
+    # ports:
+    #   - HOST_PORT:11211
+    networks:
+      - npm-net
+
+# Use nginx proxy manager
+networks:
+  npm-net:
+    external: true
