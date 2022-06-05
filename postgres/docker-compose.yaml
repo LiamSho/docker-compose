@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  pgsql:
+    image: postgres:latest
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: init_db
+      POSTGRES_PASSWORD: init_user_passwd
+      POSTGRES_USER: init_user
+    volumes:
+      - pgsql-data:/var/lib/postgresql/data
+    # ports:
+    #  - HOST_PORT:5432
+    networks:
+      - npm-net
+
+volumes:
+  pgsql-data:
+
+# Use nginx proxy manager
+networks:
+  npm-net:
+    external: true
