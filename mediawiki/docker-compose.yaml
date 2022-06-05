@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  mediawiki:
+    image: mediawiki:lts
+    restart: unless-stopped
+    volumes:
+      - mediawiki-images:/var/www/html/images
+      # After initial setup, download LocalSettings.php and
+      # uncomment the following line restart compose
+      # - ${BASE_PATH}/LocalSettings.php:/var/www/html/LocalSettings.php
+    # ports:
+    #  - HOST_PORT:80
+    networks:
+      - npm-net
+
+volumes:
+  mediawiki-images:
+
+# Use nginx proxy manager
+networks:
+  npm-net:
+    external: true
