@@ -23,3 +23,7 @@ services:
 networks:
   npm-net:
     external: true
+
+# Defaults
+# Email:    admin@example.com
+# Password: changeme
