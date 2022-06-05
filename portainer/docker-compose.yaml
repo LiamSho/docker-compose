@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    # image: portainer/portainer-ee:latest
+    container_name: portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    environment:
+      - VIRTUAL_HOST=YOUR_HOST_NAME
+      - VIRTUAL_PORT=9000
+    extra_hosts:
+      - "HOSTNAME:TARGET"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-data:/data
+    networks:
+      - npm-net
+
+volumes:
+  portainer-data:
+
+# Use nginx proxy manager
+networks:
+  npm-net:
+    external: true
