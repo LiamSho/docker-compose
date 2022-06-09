@@ -1,0 +1,17 @@
+apm-server:
+  host: 0.0.0.0:8200
+
+apm-server.kibana.enabled: true
+apm-server.kibana.host: "http://kibana:5601"
+apm-server.kibana.username: "elastic"
+apm-server.kibana.password: ${ELASTIC_PASSWORD}
+apm-server.kibana.ssl.enables: false
+
+apm-server.rum.enabled: true
+
+output:
+  elasticsearch:
+    enabled: true
+    hosts: ["http://elasticsearch:9200"]
+    username: elastic
+    password: ${ELASTIC_PASSWORD}

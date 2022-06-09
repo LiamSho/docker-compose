@@ -1,0 +1,92 @@
+version: '3.7'
+
+services:
+
+  setup:
+    build:
+      context: ${ROOT_DIR}/setup
+      args:
+        ELASTIC_VERSION: ${ELASTIC_VERSION}
+    container_name: elasticsearch-setup
+    init: true
+    volumes:
+      - elasticsearch-setup:/state:Z
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
+      LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
+      KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
+    networks:
+      - npm-net
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
+    container_name: elasticsearch
+    volumes:
+      - ${ROOT_DIR}/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,z
+      - elasticsearch-data:/usr/share/elasticsearch/data:z
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: -Xms1024m -Xmx1024m
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
+      discovery.type: single-node
+    networks:
+      - npm-net
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:${ELASTIC_VERSION}
+    container_name: logstash
+    volumes:
+      - ${ROOT_DIR}/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro,Z
+      - ${ROOT_DIR}/config/pipeline:/usr/share/logstash/pipeline:ro,Z
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: -Xms256m -Xmx256m
+      LOGSTASH_INTERNAL_PASSWORD: ${LOGSTASH_INTERNAL_PASSWORD:-}
+    networks:
+      - npm-net
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION}
+    container_name: kibana
+    volumes:
+      - ${ROOT_DIR}/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
+    ports:
+      - "5601:5601"
+    environment:
+      KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:-}
+    networks:
+      - npm-net
+    depends_on:
+      - elasticsearch
+
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:${ELASTIC_VERSION}
+    container_name: apm-server
+    command:
+      - --strict.perms=false
+    volumes:
+      - ${ROOT_DIR}/config/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro,Z
+    ports:
+      - '8200:8200'
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:-}
+    networks:
+      - npm-net
+    depends_on:
+      - elasticsearch
+
+networks:
+  npm-net:
+    external: true
+
+volumes:
+  elasticsearch-setup:
+  elasticsearch-data:
