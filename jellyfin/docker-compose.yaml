@@ -1,0 +1,22 @@
+version: "3.5"
+
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    user: "1000:1000"
+    volumes:
+      - /path/to/config:/config
+      - /path/to/cache:/cache
+      - /path/to/media:/media:ro
+    restart: "unless-stopped"
+    # ports:
+    #  - HOST:8096
+    environment:
+      - JELLYFIN_PublishedServerUrl=https://example.com
+    networks:
+      - npm-net
+
+networks:
+  npm-net:
+    external: true
