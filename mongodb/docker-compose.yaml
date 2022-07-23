@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  mongodb:
+    image: mongo:5
+    container_name: mongodb
+    restart: always
+    volumes:
+      - mongodb-data:/data/db
+    # ports:
+    #  - HOST:27017
+    networks:
+      - npm-net
+
+volumes:
+  mongodb-data:
+
+# Use nginx proxy manager
+networks:
+  npm-net:
+    external: true
