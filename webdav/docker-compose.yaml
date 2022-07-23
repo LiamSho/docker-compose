@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  webdav:
+    image: hacdias/webdav:latest
+    container_name: webdav
+    volumes:
+      - /path/to/your/data:/data
+      - /path/to/config.yaml:/config.yaml
+    command: ["--config", "/config.yaml"]
+    # ports:
+    #  - HOST:80
+    networks:
+      - npm-net
+
+networks:
+  npm-net:
+    external: true
